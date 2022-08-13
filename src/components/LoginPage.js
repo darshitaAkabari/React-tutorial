@@ -2,19 +2,28 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 // import { useAuth } from '../context/UserContext'
 import { useForm } from "react-hook-form"
-import { useDispatch } from 'react-redux'
-import {login} from "../reducers/AuthSlice"
-function LoginPage() {
+// import { useDispatch } from 'react-redux'
+// import {login} from "../reducers/AuthSlice"
+import { connect } from "react-redux";
+import { login } from "../actions/action"
+
+const mapDispatchToProps = (dispatch) => ({
+    loginHandler: (data)=>{
+      dispatch(login(data.email))}
+  })
+
+function LoginPage(props) {
     const { register, handleSubmit, formState: { errors } } = useForm();
     // const [user,setUser] = useState('')
     // const auth = useAuth()
     const navigate = useNavigate()
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
     const handleLogin = (data) => {
         // auth.login(data.email)
-        dispatch(login(data.email))
+        // dispatch(login(data.email))
         navigate('/authenticatedPage')
+        props.loginHandler(data)
         
     }
 
@@ -36,4 +45,4 @@ function LoginPage() {
     )
 }
 
-export default LoginPage
+export default connect(null,mapDispatchToProps)(LoginPage)

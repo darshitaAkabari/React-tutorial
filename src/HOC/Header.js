@@ -1,28 +1,41 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 // import { useAuth } from "../context/UserContext";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../reducers/AuthSlice";
+// import { useSelector, useDispatch } from "react-redux";
+// import { logout } from "../reducers/AuthSlice";
+import { connect } from "react-redux";
+import { logout } from "../actions/action"
 
-export default function Header(WrappedComponent, {name}) {
+
+const mapStateToProps = (state) => {
+  return ({
+  data: state.userInfo.user // state
+})}
+
+const mapDispatchToProps = (dispatch) => ({
+  logoutHandler: ()=>{
+    dispatch(logout())}
+})
+
+function Header(WrappedComponent, {name}) {
   
 
-  return function WrappedHeader() {
+  return connect(mapStateToProps, mapDispatchToProps)(function WrappedHeader(props) {
 
   // const auth = useAuth()
-  const user = useSelector((state) => state.user.value)
-  const dispatch = useDispatch()
+  // const user = useSelector((state) => state.user.value)
+  // const dispatch = useDispatch()
   const navigate = useNavigate();
   const handleLogout = () => {
     // auth.logout();
-    dispatch(logout())
-    navigate('/')
-    
-    
+    // dispatch(logout())
+    props.logoutHandler()
+    navigate('/') 
   }
+  
       return (
         <div>
-          <p>This is {name || user } header</p>
+          <p>This is {name || props.data || "Not available" } header</p>
           <button>
             <Link to="/login">Login</Link>
             </button>
@@ -31,5 +44,7 @@ export default function Header(WrappedComponent, {name}) {
           <WrappedComponent></WrappedComponent>
         </div>
       );
-    }
+    })
   };
+
+export default Header
